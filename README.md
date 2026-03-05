@@ -1,4 +1,4 @@
-# ai-command-rules · AI Command Rules
+# ai-cli-kit · AI CLI Rules
 
 > **Write shell commands correctly the first time — across Windows, Linux, macOS, Docker, SSH, and more. Works with Claude.ai, Cursor, Trae, Windsurf, Claude Code, and any AI coding tool.**
 
@@ -10,7 +10,7 @@
 
 ### What is this?
 
-`ai-command-rules` is a [Claude Skill](https://support.claude.ai/hc/en-us/articles/27906269580311) that teaches Claude to write precise, environment-aware shell commands and scripts. Instead of generating generic commands that break on your OS or shell, Claude will:
+`ai-cli-kit` is a [Claude Skill](https://support.claude.ai/hc/en-us/articles/27906269580311) that teaches Claude to write precise, environment-aware shell commands and scripts. Instead of generating generic commands that break on your OS or shell, Claude will:
 
 - **Detect your environment first** (OS, shell, Docker, venv, SSH context)
 - **Follow per-environment rules** for quoting, variables, error handling, and line endings
@@ -31,7 +31,7 @@
 ### Installation
 
 **Claude.ai**
-1. Download [`ai-command-rules.skill`](./ai-command-rules.skill)
+1. Download [`ai-cli-kit.skill`](./ai-cli-kit.skill)
 2. Go to [claude.ai](https://claude.ai) → **Settings** → **Skills** → **Upload Skill**
 
 **Cursor**
@@ -53,8 +53,8 @@ Claude will consult this skill whenever you:
 ### What's inside
 
 ```
-ai-command-rules/
-├── ai-command-rules.skill    # Claude.ai skill file
+ai-cli-kit/
+├── ai-cli-kit.skill    # Claude.ai skill file
 ├── cursor.rules              # Cursor IDE rules
 ├── CLAUDE.md                 # Claude Code project file
 ├── system-prompt.md          # Universal — paste into any AI tool
@@ -98,7 +98,7 @@ PRs welcome! If you find a missing environment, wrong syntax, or a common pitfal
 
 ### 这是什么？
 
-`ai-command-rules` 是一个 [Claude Skill（技能包）](https://support.claude.ai/hc/en-us/articles/27906269580311)，让 Claude 在生成 shell 命令和脚本时更加准确——无论你在 Windows、Linux、macOS、Docker、SSH 还是虚拟环境中工作，都能一次生成正确的命令，不再反复修改。
+`ai-cli-kit` 是一个 [Claude Skill（技能包）](https://support.claude.ai/hc/en-us/articles/27906269580311)，让 Claude 在生成 shell 命令和脚本时更加准确——无论你在 Windows、Linux、macOS、Docker、SSH 还是虚拟环境中工作，都能一次生成正确的命令，不再反复修改。
 
 安装后，Claude 会：
 
@@ -121,7 +121,7 @@ PRs welcome! If you find a missing environment, wrong syntax, or a common pitfal
 ### 安装方法
 
 **Claude.ai**
-1. 下载 [`ai-command-rules.skill`](./ai-command-rules.skill) 文件
+1. 下载 [`ai-cli-kit.skill`](./ai-cli-kit.skill) 文件
 2. 打开 [claude.ai](https://claude.ai) → **Settings（设置）** → **Skills（技能）** → **Upload Skill（上传技能）**
 
 **Cursor**
@@ -143,8 +143,8 @@ PRs welcome! If you find a missing environment, wrong syntax, or a common pitfal
 ### 文件结构
 
 ```
-ai-command-rules/
-├── ai-command-rules.skill    # Claude.ai 技能包
+ai-cli-kit/
+├── ai-cli-kit.skill    # Claude.ai 技能包
 ├── cursor.rules              # Cursor IDE 规则
 ├── CLAUDE.md                 # Claude Code 项目文件
 ├── system-prompt.md          # 通用版，任何 AI 工具均可粘贴使用

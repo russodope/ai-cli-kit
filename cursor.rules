@@ -1,0 +1,156 @@
+# AI Command Rules for Cursor
+# Adapted from: https://github.com/russodope/claude-skill-command-rules
+
+## Core Rule
+
+Before writing ANY shell command, script, or terminal instruction:
+1. Identify the target environment (OS + shell + runtime context)
+2. Apply environment-specific syntax rules
+3. Add error handling appropriate for the context
+4. If cross-platform, emit separate labeled blocks for each environment
+
+Never assume. Never emit generic commands. Always be explicit about which environment a command targets.
+
+---
+
+## Environment Detection
+
+If the environment is not clear from context, emit this detector first and ask the user to share the output:
+
+```bash
+echo "OS: $(uname -s 2>/dev/null || echo Windows)"
+echo "Shell: $SHELL"
+echo "Python: $(python --version 2>&1 || python3 --version 2>&1)"
+```
+
+---
+
+## Shell-Specific Syntax Rules
+
+### bash / zsh (Linux / macOS)
+- Scripts must start with: `set -euo pipefail`
+- Variables: `$VAR` or `${VAR}`; always double-quote: `"$VAR"`
+- Logic: `&&` / `||`; line continuation: `\`
+- Python: use `python3`, not `python`
+- Local scripts: always prefix with `./`
+- Safe delete: `rm -rf "${TARGET:?'not set'}/"`
+
+### PowerShell (Windows)
+- Scripts must start with: `$ErrorActionPreference = 'Stop'`
+- Variables: `$env:VAR` (environment) or `$var` (local)
+- Logic: PS5 use `;` not `&&`; PS7+ supports `&&`
+- Line continuation: backtick `` ` ``
+- Check if Admin before privileged operations
+- Execution policy: use `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` if scripts are blocked
+
+### CMD (Windows)
+- Use only as last resort; prefer PowerShell
+- Variables: `%VAR%`
+- Logic: `&&` (success chain), `&` (always chain)
+- Always start scripts with `@echo off`
+
+### WSL
+- Use bash syntax inside WSL
+- Windows paths: `/mnt/c/...`
+- Fix line endings before running scripts: `dos2unix file.sh`
+
+---
+
+## Common Pitfalls — Never Do These
+
+| ❌ Wrong | ✅ Right | Reason |
+|---|---|---|
+| `python script.py` | `python3 script.py` | macOS/Linux `python` may be 2.x |
+| `pip install X` | `python3 -m pip install X` | Ensures correct pip |
+| `pip install X` on system Python | add `--break-system-packages` | PEP 668 |
+| `rm -rf dist/` | `rm -rf ./dist/` | Prevent accidental root deletion |
+| `source activate` | `conda activate myenv` | Deprecated since conda 4.6 |
+| `docker run img cmd` | `docker run --rm img cmd` | Avoid orphaned containers |
+| `ssh host cmd` | `ssh -o StrictHostKeyChecking=no -o BatchMode=yes host 'cmd'` | Non-interactive SSH |
+| `&&` in PowerShell 5 | `;` or explicit `if` block | Not supported in PS5 |
+| `%VAR%` in PowerShell | `$env:VAR` | Wrong shell syntax |
+
+---
+
+## Python / Virtual Environment Rules
+
+```bash
+# Linux / macOS — create and activate
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
+```
+
+```powershell
+# Windows PowerShell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+- Never use `pip install` without `python -m pip` prefix
+- Never use `source activate` (conda) — use `conda activate envname`
+- Use `sys.executable` in Python scripts when spawning subprocesses
+
+---
+
+## Docker Rules
+
+- Always use `--rm` for one-off containers
+- Always pin image versions: `python:3.11-slim` not `python:latest`
+- Non-interactive flags: `-y`, `--yes`, `--non-interactive`, `-f`
+- Volume mounts syntax:
+  - bash: `-v "$(pwd)/data:/app/data"`
+  - PowerShell: `-v "${PWD}/data:/app/data"`
+- Check if inside container: `[ -f /.dockerenv ]`
+
+---
+
+## SSH / Remote Execution Rules
+
+```bash
+# Non-interactive SSH (for scripts and agents)
+ssh -o StrictHostKeyChecking=no \
+    -o BatchMode=yes \
+    -o ConnectTimeout=10 \
+    user@host 'command'
+```
+
+- Single quotes = remote shell expansion; double quotes = local expansion
+- For complex remote scripts, use heredoc with quoted delimiter:
+  ```bash
+  ssh user@host 'bash -s' << 'EOF'
+  set -euo pipefail
+  # commands here — nothing expands locally
+  EOF
+  ```
+- Always use `timeout N ssh ...` in automated contexts
+
+---
+
+## Git Rules
+
+- Always use `-m` for commits; never open an editor interactively
+- Line endings: add `.gitattributes` to every repo
+- Non-interactive git for CI:
+  ```bash
+  git config user.email "bot@example.com"
+  git config user.name "Bot"
+  GIT_EDITOR=true git merge --no-edit origin/main
+  ```
+- Prefer `--force-with-lease` over `--force`
+- Safe clone in CI: `git clone --depth 1 --branch $BRANCH https://...`
+
+---
+
+## Agentic / CI Context Rules
+
+When executing commands autonomously (not for a human to copy-paste):
+
+1. Probe tool availability: `command -v tool || { echo "not found"; exit 1; }`
+2. No interactive prompts anywhere in the script
+3. Prefer absolute paths over relying on `$PATH`
+4. Write temp files to `/tmp` (Linux) or `$env:TEMP` (Windows)
+5. Verify network access before `curl`, `pip install`, `npm install`
+6. Never use `sudo` inside Docker containers (usually already root)
+7. Always check `$?` or use `set -e` — never let failures pass silently
