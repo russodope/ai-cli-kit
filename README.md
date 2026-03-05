@@ -1,6 +1,6 @@
-# ai-command-rules · Claude Skill
+# ai-command-rules · AI Command Rules
 
-> **A Claude skill that writes shell commands correctly the first time — across Windows, Linux, macOS, Docker, SSH, and more.**
+> **Write shell commands correctly the first time — across Windows, Linux, macOS, Docker, SSH, and more. Works with Claude.ai, Cursor, Trae, Windsurf, Claude Code, and any AI coding tool.**
 
 [English](#english) · [中文](#中文)
 
@@ -30,10 +30,18 @@
 
 ### Installation
 
+**Claude.ai**
 1. Download [`ai-command-rules.skill`](./ai-command-rules.skill)
-2. Go to [claude.ai](https://claude.ai) → **Settings** → **Skills**
-3. Click **Upload Skill** and select the `.skill` file
-4. Done — Claude will now automatically apply these rules whenever you ask it to write or run commands
+2. Go to [claude.ai](https://claude.ai) → **Settings** → **Skills** → **Upload Skill**
+
+**Cursor**
+- Copy [`cursor.rules`](./cursor.rules) into your project root, or paste its contents into Cursor → Settings → Rules for AI
+
+**Claude Code**
+- Copy [`CLAUDE.md`](./CLAUDE.md) into your project root
+
+**Trae / Windsurf / ChatGPT / Copilot / Aider / Continue.dev / any other tool**
+- Open [`system-prompt.md`](./system-prompt.md), copy the marked section, and paste into the tool's system prompt or custom instructions field. The file includes a placement guide for each tool.
 
 ### When does it trigger?
 
@@ -46,8 +54,11 @@ Claude will consult this skill whenever you:
 
 ```
 ai-command-rules/
-├── SKILL.md                  # Main skill — environment detection, checklist, common pitfalls
-└── references/
+├── ai-command-rules.skill    # Claude.ai skill file
+├── cursor.rules              # Cursor IDE rules
+├── CLAUDE.md                 # Claude Code project file
+├── system-prompt.md          # Universal — paste into any AI tool
+└── references/               # Detailed per-environment guides (used by the .skill)
     ├── unix.md               # bash/zsh: quoting, set -euo pipefail, loops, macOS quirks
     ├── windows.md            # PowerShell 5/7, CMD, WSL: variables, error handling, exec policy
     ├── containers.md         # Docker: non-interactive run, compose, sandbox rules, cleanup
@@ -109,10 +120,18 @@ PRs welcome! If you find a missing environment, wrong syntax, or a common pitfal
 
 ### 安装方法
 
+**Claude.ai**
 1. 下载 [`ai-command-rules.skill`](./ai-command-rules.skill) 文件
-2. 打开 [claude.ai](https://claude.ai) → **Settings（设置）** → **Skills（技能）**
-3. 点击 **Upload Skill（上传技能）**，选择下载的 `.skill` 文件
-4. 完成！之后 Claude 在生成命令时会自动应用这些规范
+2. 打开 [claude.ai](https://claude.ai) → **Settings（设置）** → **Skills（技能）** → **Upload Skill（上传技能）**
+
+**Cursor**
+- 把 [`cursor.rules`](./cursor.rules) 复制到项目根目录，或将内容粘贴到 Cursor → Settings → Rules for AI
+
+**Claude Code**
+- 把 [`CLAUDE.md`](./CLAUDE.md) 复制到项目根目录
+
+**Trae / Windsurf / ChatGPT / Copilot / Aider / Continue.dev / 其他工具**
+- 打开 [`system-prompt.md`](./system-prompt.md)，复制其中标注的内容，粘贴到对应工具的 System Prompt 或 Custom Instructions 字段。文件末尾有各工具的具体放置位置说明。
 
 ### 什么时候会触发？
 
@@ -125,8 +144,11 @@ PRs welcome! If you find a missing environment, wrong syntax, or a common pitfal
 
 ```
 ai-command-rules/
-├── SKILL.md                  # 主文件：环境检测、命令编写 checklist、常见错误对照
-└── references/
+├── ai-command-rules.skill    # Claude.ai 技能包
+├── cursor.rules              # Cursor IDE 规则
+├── CLAUDE.md                 # Claude Code 项目文件
+├── system-prompt.md          # 通用版，任何 AI 工具均可粘贴使用
+└── references/               # 详细的各环境参考文档（.skill 内部使用）
     ├── unix.md               # bash/zsh：引号规则、set -euo pipefail、macOS 差异
     ├── windows.md            # PowerShell 5/7、CMD、WSL：变量、错误处理、执行策略
     ├── containers.md         # Docker：非交互执行、compose、沙箱规则、清理
